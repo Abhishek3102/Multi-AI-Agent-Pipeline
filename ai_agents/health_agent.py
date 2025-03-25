@@ -9,5 +9,12 @@ health_prompt = PromptTemplate(
 )
 
 def analyze_health(document_text):
-    response = model.invoke(health_prompt.format(document_text=document_text))
-    return response["content"]
+    try:
+        response = model.invoke(health_prompt.format(document_text=document_text))
+        if not response or "content" not in response:
+            raise ValueError("Invalid response format from LLM")
+        return response["content"]
+    
+    except Exception as e:
+        print(f"❌ Error in analyze_health: {e}")
+        return "⚠️ Error: Unable to analyze the medical report at this time. Please try again later."
